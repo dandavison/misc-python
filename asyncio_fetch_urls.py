@@ -17,7 +17,6 @@ urls = ['http://www.gov.uk', 'http://www.theguardian.com']
 coros_1 = [fetch(urls[0])]
 coros_2 = [fetch(urls[1])]
 coros = coros_1 + coros_2
-import ipdb ; ipdb.set_trace()
 future = asyncio.gather(*coros)
 try:
     loop.run_until_complete(future)

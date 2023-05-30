@@ -1,6 +1,17 @@
 import time
+from collections import deque
 from threading import Thread
 from queue import Queue
+
+class QueueX:
+    def __init__(self) -> None:
+        self.queue = deque([])
+
+    def put(self, msg):
+        self.queue.append(msg)
+
+    def get(self):
+        return self.queue.popleft()
 
 q = Queue()
 
