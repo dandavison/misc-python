@@ -24,6 +24,16 @@ def marathon_no_ties(standings: List[int]) -> List[int]:
 
     return results
 
+def marathon_no_ties_dave(standings: List[int]) -> List[int]:
+    order = [None] * len(standings)
+    for behind, ahead in enumerate(standings):
+        # student with label `ahead` finishes immediately to the left of `behind`.
+        # Since the labels are also array indexes, we record this fact as
+        order[ahead + 1] = behind
+        # There is one exception: the leftmost entry has no-one to the left, and in this case ahead = -1.
+        # But -1 was a well-chosen sentinel value, and the correct assignment is still made!
+    return order
+
 def marathon_with_ties(standings):
     graph = defaultdict(list)
 
@@ -46,29 +56,25 @@ def marathon_with_ties(standings):
 
     return order
 
-def marathon(standings: List[int]) -> List[int]:
+def marathon_with_ties_dave(standings: List[int]) -> List[int]:
     order = [None] * len(standings)
     for behind, ahead in enumerate(standings):
-        # behind is the index of the standings, they finished directly after "ahead"
-        # if ahead is -1, then behind is the winner, so their order is 0... so order[0] = behind
-        # if behind is 0, then whatever is in "ahead" was just before them, so order[ahead + 1] = behind
-        order[ahead + 1] = behind
-    return order
-
-def marathon_ties(standings: List[int]) -> List[int]:
-    order = [None] * len(standings)
-    for behind, ahead in enumerate(standings):
-        # behind is the index of the standings, they finished directly after "ahead"
-        # if ahead is -1, then behind is the winner, so their order is 0... so order[0] = behind
-        # if behind is 0, then whatever is in "ahead" was just before them, so order[ahead + 1] = behind
+        # student with label `ahead` finishes in the group to the
+        # left of the group that `behind` finishes in.
+        # The labels are also array indexes, so we use `ahead` to
+        # index into the output array.
+        # However, we may have already filled out some entries
+        # in `behind`'s finishing group, so we advance to the next empty slot.
         c = 0
         while order[ahead + 1 + c] is not None:
             c += 1
         order[ahead + 1 + c] = behind
+        # There is one exception: the leftmost entry has no-one to the left, and in this case ahead = -1.
+        # But -1 was a well-chosen sentinel value, and the correct assignment is still made: we assign into the leftmost finishing group.
     return order
 
-marathon_no_ties = marathon
-marathon_with_ties = marathon_ties
+marathon_no_ties = marathon_no_ties_dave
+marathon_with_ties = marathon_with_ties_dave
 
 def test1():
     expected = [0, 1, 2]
