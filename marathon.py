@@ -73,28 +73,28 @@ def marathon_with_ties_dave(standings: List[int]) -> List[int]:
         # But -1 was a well-chosen sentinel value, and the correct assignment is still made: we assign into the leftmost finishing group.
     return order
 
-marathon_no_ties = marathon_no_ties_dave
-marathon_with_ties = marathon_with_ties_dave
-
 def test1():
-    expected = [0, 1, 2]
+    expected = [[0, 1, 2]]
     standings =  [-1, 0, 1]
-    results = marathon_no_ties(standings)
-    print(results == expected, results)
+    for marathon in [marathon_no_ties, marathon_with_ties]:
+        results = marathon(standings)
+        assert results in expected, (marathon.__name__, standings, expected, results)
 
 
 def test2():
-    expected = [1, 0, 2]
+    expected = [[1, 0, 2]]
     standings = [1, -1, 0]
-    results = marathon_no_ties(standings)
-    print(results == expected, results)
+    for marathon in [marathon_no_ties, marathon_with_ties]:
+        results = marathon(standings)
+        assert results in expected, (marathon.__name__, standings, expected, results)
 
 
 def test3():
     expected = [[0, 1, 2, 3], [0, 2, 1, 3]]  # 1 and 2 are tied
     standings = [-1, 0, 0, 2]
-    results = marathon_with_ties(standings)
-    print(results in expected, results)
+    marathon = marathon_with_ties
+    results = marathon(standings)
+    assert results in expected, (marathon.__name__, standings, expected, results)
 
 def test4():
     expected = [[0, 1, 2, 3, 4],
@@ -106,10 +106,11 @@ def test4():
                       [-1, -1, 0, 1, 3],
                       [-1, -1, 1, 0, 2],
                       [-1, -1, 1, 1, 2]]:
-        results = marathon_with_ties(standings)
-        print(results in expected, results)
+        marathon = marathon_with_ties
+        results = marathon(standings)
+        assert results in expected, (marathon.__name__, standings, expected, results)
 
 
-for test in [test3, test4]:
+for test in [test1, test2, test3, test4]:
     print(test.__name__)
     test()
