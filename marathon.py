@@ -10,68 +10,34 @@ from typing import Any, Dict, List, TypeVar
 from collections import defaultdict, deque
 
 def marathon_no_ties(standings: List[int]) -> List[int]:
-    after_to_before = standings
-    before_to_after = dict((before, after) for after, before in enumerate(after_to_before))
-    winner = before_to_after.pop(-1) # winner guaranteed to be present
-    [last] = set(after_to_before) - set(before_to_after)  # last is guaranteed to be the only missing key
-    before_to_after[last] = -1
-
+    edges = {left: right for right, left in enumerate(standings)}
     results = []
-    curr = winner
-    while len(results) < len(after_to_before):
+    curr = edges.pop(-1)
+    while True:
         results.append(curr)
-        curr = before_to_after[curr]
+        if curr in edges:
+            curr = edges[curr]
+        else:
+            # curr is last
+            return results
+    raise Exception("Invalid input")
+
+def marathon_with_ties(standings) -> List[int]:
+    adj_list = defaultdict(list)
+    for right, left in enumerate(standings):
+        adj_list[left].append(right)
+
+    leftmost_group = adj_list.pop(-1)
+    # BFS
+    queue = deque(leftmost_group)
+    results = []
+    while queue:
+        left = queue.popleft()
+        results.append(left)
+        queue.extend(adj_list[left])
 
     return results
 
-def marathon_no_ties_dave(standings: List[int]) -> List[int]:
-    order = [None] * len(standings)
-    for behind, ahead in enumerate(standings):
-        # student with label `ahead` finishes immediately to the left of `behind`.
-        # Since the labels are also array indexes, we record this fact as
-        order[ahead + 1] = behind
-        # There is one exception: the leftmost entry has no-one to the left, and in this case ahead = -1.
-        # But -1 was a well-chosen sentinel value, and the correct assignment is still made!
-    return order
-
-def marathon_with_ties(standings):
-    graph = defaultdict(list)
-
-    for i, s in enumerate(standings):
-        if s != -1:
-            graph[s].append(i)
-
-    # Initialize queue with students that finished first
-    queue = deque(i for i, s in enumerate(standings) if s == -1)
-
-    order = []
-    visited = set()
-    while queue:
-        student = queue.popleft()
-        order.append(student)
-        for next_student in graph[student]:
-            if next_student not in visited:
-                queue.append(next_student)
-                visited.add(next_student)
-
-    return order
-
-def marathon_with_ties_dave(standings: List[int]) -> List[int]:
-    order = [None] * len(standings)
-    for behind, ahead in enumerate(standings):
-        # student with label `ahead` finishes in the group to the
-        # left of the group that `behind` finishes in.
-        # The labels are also array indexes, so we use `ahead` to
-        # index into the output array.
-        # However, we may have already filled out some entries
-        # in `behind`'s finishing group, so we advance to the next empty slot.
-        c = 0
-        while order[ahead + 1 + c] is not None:
-            c += 1
-        order[ahead + 1 + c] = behind
-        # There is one exception: the leftmost entry has no-one to the left, and in this case ahead = -1.
-        # But -1 was a well-chosen sentinel value, and the correct assignment is still made: we assign into the leftmost finishing group.
-    return order
 
 def test1():
     expected = [[0, 1, 2]]
