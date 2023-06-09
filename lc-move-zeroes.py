@@ -6,7 +6,6 @@ relative order of the non-zero elements.
 
 Note that you must do this in-place without making a copy of the array.
 """
-from collections import deque
 from typing import List
 
 class Solution:

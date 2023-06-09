@@ -14,3 +14,17 @@ class Solution:
             seen[tot] += 1
 
         return count
+
+from collections import Counter
+from typing import List
+
+class Solution2:
+    def subarraySum(self, nums: List[int], k: int) -> int:
+        cumsums_to_left = Counter([0]) # There's a cumulative sum of zero at the start
+        cumsum, n_subarrays = 0, 0
+        for n in nums:
+            cumsum += n
+            n_subarrays += cumsums_to_left[cumsum - k]
+            cumsums_to_left[cumsum] += 1
+
+        return n_subarrays

@@ -17,3 +17,30 @@
 # Test Case:
 
 # When running python challenge.py, the output should show the consumer consuming 20 items, one at a time. Since the consumer sleeps for 2 seconds after consuming an item and the producer sleeps for 1 second after producing an item, you should see that the producer is waiting when the queue is full and the consumer is waiting when the queue is empty.
+import asyncio
+
+DONE_SENTINEL = None
+
+async def producer(queue: asyncio.Queue):
+    for item in range(1, 20 + 1):
+        await queue.put(item)
+        print(f"Put: {item}")
+        await asyncio.sleep(1)
+    await queue.put(DONE_SENTINEL)
+
+async def consumer(queue: asyncio.Queue):
+    while True:
+        item = await queue.get()
+        if item == DONE_SENTINEL:
+            return
+        print(f"Consumed: {item}")
+
+
+async def main():
+    queue = asyncio.Queue(maxsize=5)
+    producer_task = asyncio.create_task(producer(queue))
+    consumer_task = asyncio.create_task(consumer(queue))
+    await producer_task
+    await consumer_task
+
+asyncio.run(main())
