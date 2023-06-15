@@ -1,7 +1,6 @@
 # https://leetcode.com/problems/best-time-to-buy-and-sell-stock-with-cooldown
 
 
-from itertools import chain, zip_longest
 from typing import List
 
 class Solution:
@@ -18,4 +17,3 @@ class Solution:
             )
 
         return int(max(no_stock, no_stock_cooldown))
-
