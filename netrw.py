@@ -15,21 +15,6 @@ import subprocess
 import tempfile
 
 
-def netrepl(address: str, port: int, globals: dict, locals: dict):
-    from repl import repl
-
-    sock = socket.socket()
-    sock.connect((address, port))
-
-    def read():
-        return sock.recv(0xFFFF).decode("utf-8")
-
-    def write(s: str):
-        sock.send(s.encode("utf-8"))
-
-    repl(read, write, globals, locals)
-
-
 def netread(address: str, port: int, python=True):
     if python:
         return _netread_python(address, port)
