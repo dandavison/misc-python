@@ -1,14 +1,16 @@
 from dataclasses import dataclass
 from typing import Optional
 
+
 @dataclass
 class X:
     a: int
     c: int
-    b: int = None
+    b: Optional[int] = None
 
     def __repr__(self):
         return f"X(a={self.a}, b={self.b}, c={self.c})"
+
 
 if False:
     print(X(1, 2))  # TypeError: non-default argument 'c' follows default argument
@@ -26,5 +28,9 @@ class BinOp(Node):
     right: int
 
 
-
 print(BinOp("+", 1, 2))
+
+
+@dataclass
+class X:
+    a: int = 0
