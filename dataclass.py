@@ -18,7 +18,7 @@ if False:
 
 @dataclass
 class Node:
-    line_num: Optional[bool] = None
+    line_num: Optional[bool]
 
 
 @dataclass
@@ -28,9 +28,15 @@ class BinOp(Node):
     right: int
 
 
-print(BinOp("+", 1, 2))
+# Nested dataclass
+
+
+@dataclass
+class Y:
+    b: int
 
 
 @dataclass
 class X:
-    a: int = 0
+    a: int
+    y: Y
