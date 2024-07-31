@@ -31,12 +31,15 @@ class BinOp(Node):
 # Nested dataclass
 
 
-@dataclass
+@dataclass()
 class Y:
     b: int
 
 
-@dataclass
-class X:
+@dataclass()
+class Z:
     a: int
     y: Y
+
+
+print(Z(1,2))
