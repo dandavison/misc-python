@@ -32,20 +32,40 @@ def netrepl(address: str, port: int):
 
 
 def repl(read: Callable[[], str], write: Callable[[str], None]):
+    proc = subprocess.Popen(
+        ["bash"],
+        stdin=subprocess.PIPE,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        text=True,
+    )
+    assert proc.stdin and proc.stdout and proc.stderr
+
     while True:
         write("\n> ")
         try:
             input = read().strip()
             if input == "exit":
                 break
-            proc = subprocess.run(["bash", "-c", input], capture_output=True)
-            if proc.returncode != 0:
-                write(f"exit code: {proc.returncode}\n")
-            if proc.stderr:
-                for line in proc.stderr.decode("utf-8").splitlines(keepends=True):
-                    write(f"stderr: {line}")
-            for line in proc.stdout.decode("utf-8").splitlines(keepends=True):
-                write(line)
+            proc.stdin.write(input + "\n")
+            proc.stdin.flush()
+
+            # Read stdout
+            while True:
+                output = proc.stdout.readline()
+                if output == "" and proc.poll() is not None:
+                    break
+                if output:
+                    write(output)
+
+            # Read stderr
+            while True:
+                error = proc.stderr.readline()
+                if error == "" and proc.poll() is not None:
+                    break
+                if error:
+                    write(f"stderr: {error}")
+
         except Exception as err:
             write(f"error: {err}")
             write(traceback.format_exc())
