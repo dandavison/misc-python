@@ -1,0 +1,8 @@
+Collapsible {
+  background: $panel;
+  color: $text-muted;
+}
+
+CollapsibleTitle.highlighted {
+    color: $text;
+}
