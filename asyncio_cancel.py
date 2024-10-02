@@ -1,31 +1,34 @@
 import asyncio
 
 
-async def cancel_me():
-    print("cancel_me(): before sleep")
+async def afn(name: str, leaf: bool):
+    if not leaf:
+        asyncio.create_task(afn("leaf", leaf=True))
 
+    print(f"name: {name} before sleep")
     try:
-        # Wait for 1 hour
-        await asyncio.sleep(3600)
+        await asyncio.sleep(0.2)
     except asyncio.CancelledError:
-        print("cancel_me(): cancel sleep")
+        print(f"name: {name} caught CancelledError; re-raising")
         raise
     finally:
-        print("cancel_me(): after sleep")
+        print(f"name: {name} exiting")
 
 
 async def main():
-    # Create a "cancel_me" Task
-    task = asyncio.create_task(cancel_me())
+    task = asyncio.create_task(afn("primary", leaf=False))
 
-    # Wait for 1 second
-    await asyncio.sleep(1)
+    await asyncio.sleep(0.1)
 
     task.cancel()
+    # task.get_coro().throw(asyncio.CancelledError("I cancelled it via lower level API"))
+    await asyncio.sleep(777)
     try:
         await task
-    except asyncio.CancelledError:
-        print("main(): cancel_me is cancelled now")
+    except asyncio.CancelledError as exc:
+        print(f"main(): task cancelled: {exc}")
+    else:
+        print("main(): task not cancelled")
 
 
 asyncio.run(main())
