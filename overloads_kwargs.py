@@ -1,18 +1,28 @@
-from typing import Tuple, overload
+from typing import Callable, TypeVar, Union, overload
+
+from typing_extensions import Concatenate, ParamSpec
+
+P = ParamSpec("P")
+R = TypeVar("R")
+
+
+def add_c_param(f: Callable[P, R]) -> Callable[Concatenate[int, P], R]: ...
 
 
 @overload
-def f(a: int, *, c: int = 2) -> Tuple[int, int, int]: ...
+@add_c_param
+def f(a: int) -> int: ...
+
+
+xxx = f
 
 
 @overload
-def f(a: int, b: int, *, c: int = 2) -> Tuple[int, int, int]: ...
+def f(a: int, b: int) -> str: ...
 
 
-def f(a: int, b: int = 1, c: int = 2) -> Tuple[int, int, int]:
-    return a, b, c
-
-
-if __name__ == "__main__":
-    print(f(0))
-    print(f(0))
+def f(a: int, b: int = 0, c: int = 0) -> Union[int, str]:
+    if b > 0:
+        return "hello"
+    else:
+        return 0
