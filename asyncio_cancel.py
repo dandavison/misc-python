@@ -8,8 +8,8 @@ async def afn(name: str, leaf: bool):
     print(f"name: {name} before sleep")
     try:
         await asyncio.sleep(0.2)
-    except asyncio.CancelledError:
-        print(f"name: {name} caught CancelledError; re-raising")
+    except asyncio.CancelledError as e:
+        print(f"name: {name} caught CancelledError ({e}); re-raising")
         raise
     finally:
         print(f"name: {name} exiting")
@@ -20,15 +20,15 @@ async def main():
 
     await asyncio.sleep(0.1)
 
-    task.cancel()
-    # task.get_coro().throw(asyncio.CancelledError("I cancelled it via lower level API"))
-    await asyncio.sleep(777)
+    assert task.cancel()
     try:
         await task
     except asyncio.CancelledError as exc:
         print(f"main(): task cancelled: {exc}")
     else:
         print("main(): task not cancelled")
+
+    await asyncio.sleep(2)
 
 
 asyncio.run(main())

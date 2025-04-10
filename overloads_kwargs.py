@@ -14,7 +14,7 @@ def add_c_param(f: Callable[P, R]) -> Callable[Concatenate[int, P], R]: ...
 def f(a: int) -> int: ...
 
 
-xxx = f
+_ = f
 
 
 @overload
