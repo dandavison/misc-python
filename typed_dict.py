@@ -9,4 +9,6 @@ class D(TypedDict):
 d = D({"foo": None, "bar": None})
 d = D({"foo": 1, "bar": "a"})
 
+foo = d.get("foo")
+
 print(D.__annotations__)

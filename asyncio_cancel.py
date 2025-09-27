@@ -1,9 +1,14 @@
+"""
+I think that the point of this example was to show that when a task is canceled, the CancelledError is not seen by any
+tasks it may have created.
+"""
+
 import asyncio
 
 
 async def afn(name: str, leaf: bool):
     if not leaf:
-        asyncio.create_task(afn("leaf", leaf=True))
+        await asyncio.create_task(afn("leaf", leaf=True))
 
     print(f"name: {name} before sleep")
     try:
