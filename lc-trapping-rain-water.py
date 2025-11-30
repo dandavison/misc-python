@@ -1,5 +1,6 @@
 # https://leetcode.com/problems/trapping-rain-water
 
+# Perhaps correct, but suboptimal time complexity
 
 class Solution:
     def trap(self, height: List[int]) -> int:
