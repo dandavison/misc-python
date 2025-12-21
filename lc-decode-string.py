@@ -1,39 +1,26 @@
 # 3[a2[c]]
-class Solution:
-    def decodeString(self, s: str) -> str:
+
+
+class Solution(object):
+    def decodeString(self, s):
         stack = []
-        curr_op = ""
-        curr_arg = ""
-        in_arg = False
-
-        print(s)
-        print()
+        curNum = 0
+        curString = ""
         for c in s:
-            print(c, "->", end=" ")
             if c == "[":
-                stack.append(curr_op)
-                curr_op = ""
+                stack.append(curString)
+                stack.append(curNum)
+                curString = ""
+                curNum = 0
             elif c == "]":
-                if curr_arg:
-                    stack.append(curr_arg)
-                    curr_arg = ""
-                arg = stack.pop()
-                op = stack.pop()
-                stack.append(arg * int(op))
-            elif c in "0123456789":
-                if in_arg:
-                    if curr_arg:
-                        stack.append(curr_arg)
-                        curr_arg = ""
-                    in_arg = False
-                curr_op += c
+                num = stack.pop()
+                prevString = stack.pop()
+                curString = prevString + num * curString
+            elif c.isdigit():
+                curNum = curNum * 10 + int(c)
             else:
-                in_arg = True
-                curr_arg += c
-
-            print(stack)
-
-        return "".join(stack)
+                curString += c
+        return curString
 
 
 if __name__ == "__main__":
